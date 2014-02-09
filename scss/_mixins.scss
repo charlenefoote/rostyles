@@ -1,0 +1,318 @@
+/******************************************************************
+Site Name:
+Author:
+
+Stylesheet: Mixins & Constants Stylesheet
+
+This is where you can take advantage of Sass' great features:
+Mixins & Constants. I won't go in-depth on how they work exactly,
+there are a few articles below that will help do that. What I will
+tell you is that this will help speed up simple changes like
+changing a color or adding CSS3 techniques like box shadow and
+border-radius.
+
+A WORD OF WARNING: It's very easy to overdo it here. Be careful and
+remember less is more.
+
+******************************************************************/
+
+/*********************
+CLEARFIXIN'
+*********************/
+
+// Contain floats: nicolasgallagher.com/micro-clearfix-hack/
+.clearfix {
+  zoom: 1;
+	&:before, &:after { content: ""; display: table; }
+	&:after { clear: both; }
+}
+
+@mixin clear-fix {
+	zoom: 1;
+	&:before, &:after { content: ""; display: table; }
+	&:after { clear: both; }
+}
+
+// Shamelessly ganked from: http://37signals.com/svn/posts/3271-easy-retina-ready-images-using-scss
+// Example:
+// div.logo {
+//   background: url("logo.png") no-repeat;
+//   @include image-2x("logo2x.png", 100px, 25px);
+// }
+@mixin image-2x($image, $width, $height) {
+  @media (min--moz-device-pixel-ratio: 1.3),
+         (-o-min-device-pixel-ratio: 2.6/2),
+         (-webkit-min-device-pixel-ratio: 1.3),
+         (min-device-pixel-ratio: 1.3),
+         (min-resolution: 1.3dppx) {
+    /* on retina, use image that's scaled by 2 */
+    background-image: url($image);
+    background-size: $width $height;
+  }
+}
+
+/*********************
+TOOLS
+*********************/
+
+// BORDER-BOX ALL THE THINGS! (http://paulirish.com/2012/box-sizing-border-box-ftw/)
+* { 
+	-webkit-box-sizing: border-box; 
+	-moz-box-sizing:    border-box; 
+	box-sizing:         border-box; 
+}
+
+// http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/ 
+.image-replacement {
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+@mixin buttonized($top, $mid_top, $mid_bottom, $bottom, $highlight, $border_high, $border_low, $text : #fff, $hovertext : #fff) {
+	background: $mid_top;
+	background: -moz-linear-gradient(top, $top 0%, $mid_top 50%, $mid_bottom 51%, $bottom 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$top), color-stop(50%,$mid_top), color-stop(51%,$mid_bottom), color-stop(100%,$bottom));
+	background: -webkit-linear-gradient(top, $top 0%,$mid_top 50%,$mid_bottom 51%,$bottom 100%);
+	background: -o-linear-gradient(top, $top 0%,$mid_top 50%,$mid_bottom 51%,$bottom 100%);
+	background: -ms-linear-gradient(top, $top 0%,$mid_top 50%,$mid_bottom 51%,$bottom 100%);
+	background: linear-gradient(to bottom, $top 0%,$mid_top 50%,$mid_bottom 51%,$bottom 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{ie-hex-str($top)}', endColorstr='#{ie-hex-str($bottom)}',GradientType=0 );
+	@include box-shadow(inset 1px 1px 0px 0px $highlight);
+	border-width:1px;
+	border-color:$border_high $border_low $border_low $border_high;
+	border-style:solid;
+	font:bold 18px/1em $limos_sans;
+	text-shadow:2px 2px 2px rgba(0,0,0,0.25);
+	color:$text;
+	padding:0.5em 2em;
+	display:inline-block;
+	cursor:pointer;
+	*display:block;
+	zoome:1;
+	&.rounded {
+		@include border-radius(2em);
+	}
+	&:hover { color:$hovertext; }
+}
+
+/*********************
+COLORS
+Need help w/ choosing your colors? Try this site out:
+http://0to255.com/
+*********************/
+
+$green : #b0b044;
+$yellow : #fbbd01;
+
+$gray:				#404041;
+$black:             #000;
+$white:             #fff;
+
+$bones-pink:        #f01d4f;
+$bones-blue:        #1990db;
+
+$link-color:        #de5519;
+$link-hover:        #fbbd01;
+
+/*
+Here's a great tutorial on how to
+use color variables properly:
+http://sachagreif.com/sass-color-variables/
+*/
+
+
+/*********************
+TYPOGRAPHY
+*********************/
+
+$ro-sans : 'Oswald', 'Helvetica Neue', Helvetica, Arials, sans-serif;
+$ro-serif : 'Arapey',Georgia, serif;
+
+
+// text alignment 
+.text-left   { text-align: left; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+
+
+/*********************
+BORDER RADIUS
+*********************/
+
+/*
+I totally rewrote this to be cleaner and easier to use.
+You'll need to be using Sass 3.2+ for these to work.
+Thanks to @anthonyshort for the inspiration on these.
+USAGE: @include border-radius(4px 4px 0 0);
+*/
+
+@mixin border-radius($radius...) {
+	// defining prefixes so we can use them in mixins below
+	$prefixes:      ("-webkit", "-moz", "-ms", "-o",  "");
+  @each $prefix in $prefixes {
+    #{$prefix}-border-radius: $radius;
+  }
+
+  border-radius: $radius;
+}
+
+/*********************
+TRANISTION
+*********************/
+
+/*
+I totally rewrote this to be cleaner and easier to use.
+You'll need to be using Sass 3.2+ for these to work.
+Thanks to @anthonyshort for the inspiration on these.
+USAGE: @include transition(all 0.2s ease-in-out);
+*/
+
+@mixin transition($transition...) {
+	// defining prefixes so we can use them in mixins below
+	$prefixes:      ("-webkit", "-moz", "-ms", "-o",  "");
+  @each $prefix in $prefixes {
+    #{$prefix}-transition: $transition;
+  }
+
+  transition: $transition;
+}
+
+
+/*********************
+BOX SHADOWS
+*********************/
+
+/*
+I totally rewrote this to be cleaner and easier to use.
+You'll need to be using Sass 3.2+ for these to work.
+Thanks to @anthonyshort for the inspiration on these.
+USAGE: @include box-shadow(inset 0 0 4px rgba(0,0,0,0.22));
+*/
+
+@mixin box-shadow($shadow...) {
+	// defining prefixes so we can use them in mixins below
+	$prefixes:      ("-webkit", "-moz", "-ms", "-o",  "");
+  @each $prefix in $prefixes {
+    #{$prefix}-box-shadow: $shadow;
+  }
+
+  box-shadow: $shadow;
+}
+
+
+/*********************
+CSS3 GRADIENTS
+Be careful with these since they can
+really slow down your CSS. Don't overdue it.
+*********************/
+
+/* @include css-gradient(#dfdfdf,#f8f8f8); */
+@mixin css-gradient($from: #dfdfdf, $to: #f8f8f8) {
+	background-color: $to;
+	background-image: -webkit-gradient(linear, left top, left bottom, from($from), to($to));
+	background-image: -webkit-linear-gradient(top, $from, $to);
+	background-image: -moz-linear-gradient(top, $from, $to);
+	background-image: -o-linear-gradient(top, $from, $to);
+	background-image: linear-gradient(to bottom, $from, $to);
+}
+
+/*********************
+BOX SIZING
+*********************/
+
+/* @include box-sizing(border-box); */
+/* NOTE: value of "padding-box" is only supported in Gecko. So
+probably best not to use it. I mean, were you going to anyway? */
+@mixin box-sizing($type: border-box) {
+	-webkit-box-sizing: $type;
+	-moz-box-sizing:    $type;
+	-ms-box-sizing:     $type;
+	box-sizing:         $type;
+}
+
+
+/*********************
+BUTTONS
+*********************/
+
+.button, 
+.button:visited,
+button, 
+button:visited {
+	margin: 2em auto;
+	display: inline-block;
+	text-align: center;
+	span {
+		font-family: $ro-sans;
+		text-transform: uppercase;
+		color: $gray;
+		display: inline-block;
+		font-size: 14px;
+		letter-spacing: .2em;
+		text-decoration: none;
+		&:before, &:after {
+			content: "";
+			position: relative;
+			display: block;
+			border-top: 3px solid $green;
+			padding: 8px 0;
+			margin: 0 -20px;
+			@include transition(all .25s ease-in-out);
+		}
+		&:before { top: 0px; }
+		&:after { bottom: -14px; }
+	}
+
+	&:hover, &:focus {
+		span {
+			&:before { top: -5px; }
+			&:after { bottom: -19px; }
+		}
+	}
+}
+
+
+.button-wrap{
+	margin: 2em auto;
+	display: block;
+	width: 80px;
+	position: relative;
+		text-align: center;
+	input[type="submit"] {
+		font-family: $ro-sans;
+		text-transform: uppercase;
+		background: none;
+		color: $gray;
+		width: 80px;
+		display: inline-block;
+		font-size: 14px;
+		letter-spacing: .2em;
+		text-decoration: none;
+		border: none;
+		padding: 16px 0;
+		&:focus {
+			outline: none;
+		}
+	}
+		img {
+			display: none;
+		}
+	
+		&:before, &:after {
+			content: "";
+			display: block;
+			position: absolute;
+			width: 80px;
+			border-top: 3px solid $green;
+			top: 0px;
+			@include transition(all .25s ease-in-out);
+		}
+		&:after { bottom: 0px; top: auto; }
+
+	&:hover, &:focus {
+		&:before { top: -5px; }
+		&:after { bottom: -5px; }
+	}
+}

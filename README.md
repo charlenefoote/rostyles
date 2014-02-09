@@ -1,0 +1,1 @@
+This is the custom Wordpress theme for RO Style Salon. You can view the site at http://rostylesalon.com.
